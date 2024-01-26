@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            background-color: #1b1b1b; /* Black (slightly purple) background */
+            color: #ffffff; /* White text */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            text-align: right;
+            padding: 10px;
+        }
+
+        button#impress-button {
+            background-color: transparent;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+
+        .chat-container {
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
+            border-radius: 5px;
+            padding: 20px;
+            width: 400px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .chat {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ffffff;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333333; /* Dark gray input field */
+            color: #ffffff;
+        }
+
+        button#send-button {
+            background-color: #007acc; /* Blue send button */
+            border: none;
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button id="impress-button">Impress</button>
+    </header>
+    <main>
+        <div class="chat-container">
+            <div class="chat" id="chat"></div>
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button id="send-button">Send</button>
+        </div>
+    </main>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const chatContainer = document.querySelector(".chat");
+            const userInput = document.getElementById("user-input");
+            const sendButton = document.getElementById("send-button");
+
+            sendButton.addEventListener("click", sendMessage);
+            userInput.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    sendMessage();
+                }
+            });
+
+            async function sendMessage() {
+                const userMessage = userInput.value.trim();
+                if (userMessage !== "") {
+                    appendMessage("You: " + userMessage);
+                    userInput.value = "";
+
+                    try {
+                        const response = await fetch('https://api.together.xyz/v1/chat/completions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer 5240438ac820d72e8621da1245fe33afe2319be569eef402537688225701c2ca' // Your API key
+                            },
+                            body: JSON.stringify({
+                                "model": "togethercomputer/llama-2-7b-chat",
+                                "max_tokens": 512,
+                                "prompt": "[INST] " + userMessage + " [/INST]",
+                                "request_type": "language-model-inference",
+                                "temperature": 0.7,
+                                "top_p": 0.7,
+                                "top_k": 50,
+                                "repetition_penalty": 1,
+                                "stream_tokens": true,
+                                "stop": [
+                                    "[/INST]",
+                                    "</s>"
+                                ],
+                                "promptObj": {
+                                    "prompt": userMessage
+                                }
+                            })
+                        });
+
+                        const responseData = await response.json();
+                        console.log(responseData); // Log the response data
+
+                        if (responseData && responseData.choices && responseData.choices[0]) {
+                            const aiResponse = responseData.choices[0].text;
+                            appendMessage("AI: " + aiResponse);
+                        } else {
+                            console.error("No valid AI response received.");
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            }
+
+            function appendMessage(message) {
+                const messageElement = document.createElement("div");
+                messageElement.textContent = message;
+                chatContainer.appendChild(messageElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>
