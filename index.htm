@@ -81,6 +81,8 @@
         </div>
     </main>
     <script>
+        const apiGatewayUrl = 'https://5ntlhl690a.execute-api.us-east-1.amazonaws.com/default'; // Replace with your API Gateway URL
+
         document.addEventListener("DOMContentLoaded", function () {
             const chatContainer = document.querySelector(".chat");
             const userInput = document.getElementById("user-input");
@@ -100,37 +102,19 @@
                     userInput.value = "";
 
                     try {
-                        const response = await fetch('https://api.together.xyz/v1/chat/completions', {
+                        const response = await fetch(apiGatewayUrl + '/chat', {
                             method: 'POST',
                             headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': 'Bearer 5240438ac820d72e8621da1245fe33afe2319be569eef402537688225701c2ca' // Your API key
+                                'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({
-                                "model": "togethercomputer/llama-2-7b-chat",
-                                "max_tokens": 512,
-                                "prompt": "[INST] " + userMessage + " [/INST]",
-                                "request_type": "language-model-inference",
-                                "temperature": 0.7,
-                                "top_p": 0.7,
-                                "top_k": 50,
-                                "repetition_penalty": 1,
-                                "stream_tokens": true,
-                                "stop": [
-                                    "[/INST]",
-                                    "</s>"
-                                ],
-                                "promptObj": {
-                                    "prompt": userMessage
-                                }
-                            })
+                            body: JSON.stringify({ message: userMessage })
                         });
 
                         const responseData = await response.json();
                         console.log(responseData); // Log the response data
 
-                        if (responseData && responseData.choices && responseData.choices[0]) {
-                            const aiResponse = responseData.choices[0].text;
+                        if (responseData && responseData.aiResponse) {
+                            const aiResponse = responseData.aiResponse;
                             appendMessage("AI: " + aiResponse);
                         } else {
                             console.error("No valid AI response received.");
