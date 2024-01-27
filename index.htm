@@ -96,36 +96,35 @@
             }
         });
 
-        async function sendMessage() {
-            const userMessage = userInput.value.trim();
-            if (userMessage !== "") {
-                appendMessage("You: " + userMessage);
-                userInput.value = "";
+       async function sendMessage() {
+    const userMessage = userInput.value.trim();
+    if (userMessage !== "") {
+        appendMessage("You: " + userMessage);
+        userInput.value = "";
 
-                try {
-                    const response = await fetch(apiGatewayUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ message: userMessage }) // Anfragekörper gemäß Ihrer Cloud-Funktion
-                    });
+        try {
+            const response = await fetch(apiGatewayUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: userMessage })
+            });
 
-                    const responseData = await response.json();
-                    console.log(responseData); // Log the response data
+            const responseData = await response.json();
+            console.log(responseData);
 
-                    // Anpassen der Antwortverarbeitung entsprechend der Struktur der Antwort Ihrer Cloud-Funktion
-                    if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
-                        const aiResponse = responseData.choices[0].message;
-                        appendMessage("AI: " + aiResponse);
-                    } else {
-                        console.error("No valid AI response received.");
-                    }
-                } catch (error) {
-                    console.error(error);
-                }
+            if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
+                const aiResponse = responseData.choices[0].message.content; // Access 'content' field
+                appendMessage("AI: " + aiResponse);
+            } else {
+                console.error("No valid AI response received.");
             }
+        } catch (error) {
+            console.error(error);
         }
+    }
+}
 
         function appendMessage(message) {
             const messageElement = document.createElement("div");
