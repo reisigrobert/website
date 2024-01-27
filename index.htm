@@ -80,58 +80,61 @@
             <button id="send-button">Send</button>
         </div>
     </main>
+    
     <script>
-        const apiGatewayUrl = 'https://5ntlhl690a.execute-api.us-east-1.amazonaws.com/default'; // Replace with your API Gateway URL
+    const apiGatewayUrl = 'https://us-central1-starry-minutia-366119.cloudfunctions.net/reisigTogetherApi'; // Ihre Cloud-Funktion-URL
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const chatContainer = document.querySelector(".chat");
-            const userInput = document.getElementById("user-input");
-            const sendButton = document.getElementById("send-button");
+    document.addEventListener("DOMContentLoaded", function () {
+        const chatContainer = document.querySelector(".chat");
+        const userInput = document.getElementById("user-input");
+        const sendButton = document.getElementById("send-button");
 
-            sendButton.addEventListener("click", sendMessage);
-            userInput.addEventListener("keydown", function (event) {
-                if (event.key === "Enter") {
-                    sendMessage();
-                }
-            });
-
-            async function sendMessage() {
-                const userMessage = userInput.value.trim();
-                if (userMessage !== "") {
-                    appendMessage("You: " + userMessage);
-                    userInput.value = "";
-
-                    try {
-                        const response = await fetch(apiGatewayUrl + '/chat', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({ message: userMessage })
-                        });
-
-                        const responseData = await response.json();
-                        console.log(responseData); // Log the response data
-
-                        if (responseData && responseData.aiResponse) {
-                            const aiResponse = responseData.aiResponse;
-                            appendMessage("AI: " + aiResponse);
-                        } else {
-                            console.error("No valid AI response received.");
-                        }
-                    } catch (error) {
-                        console.error(error);
-                    }
-                }
-            }
-
-            function appendMessage(message) {
-                const messageElement = document.createElement("div");
-                messageElement.textContent = message;
-                chatContainer.appendChild(messageElement);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+        sendButton.addEventListener("click", sendMessage);
+        userInput.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                sendMessage();
             }
         });
-    </script>
+
+        async function sendMessage() {
+            const userMessage = userInput.value.trim();
+            if (userMessage !== "") {
+                appendMessage("You: " + userMessage);
+                userInput.value = "";
+
+                try {
+                    const response = await fetch(apiGatewayUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ message: userMessage }) // Anfragekörper gemäß Ihrer Cloud-Funktion
+                    });
+
+                    const responseData = await response.json();
+                    console.log(responseData); // Log the response data
+
+                    // Anpassen der Antwortverarbeitung entsprechend der Struktur der Antwort Ihrer Cloud-Funktion
+                    if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
+                        const aiResponse = responseData.choices[0].message;
+                        appendMessage("AI: " + aiResponse);
+                    } else {
+                        console.error("No valid AI response received.");
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+
+        function appendMessage(message) {
+            const messageElement = document.createElement("div");
+            messageElement.textContent = message;
+            chatContainer.appendChild(messageElement);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+    });
+</script>
+
 </body>
 </html>
