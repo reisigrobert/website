@@ -3,137 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat</title>
+    <title>Personal AI Assistant</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
-        body {
-            background-color: #1b1b1b; /* Black (slightly purple) background */
-            color: #ffffff; /* White text */
-            font-family: Arial, sans-serif;
+        body, html {
+            height: 100%;
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #2C1938; /* Uni-color background */
+            color: #ffffff; /* White text */
+        }
+
+        .content {
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 50%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 2px solid #5D3F6A; /* Subtle border */
+            background-color: #341A4B; /* Darker background for input */
+            color: #ffffff;
+            font-size: 1.2em;
+        }
+
+        .send-button {
+            background-color: #4C3C70; /* Subtle button color */
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .suggested-questions {
+            margin-top: 20px;
+            color: #7C629B; /* Subtle color for suggested questions */
+        }
+
+        .loading-animation {
+            display: none;
+            margin-top: 20px;
         }
 
         header {
-            text-align: right;
-            padding: 10px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
         }
 
-        button#impress-button {
+        .impress-button {
             background-color: transparent;
             border: none;
             color: #ffffff;
             cursor: pointer;
+            font-size: 1em;
         }
 
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 80vh;
-        }
-
-        .chat-container {
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black background */
-            border-radius: 5px;
-            padding: 20px;
-            width: 400px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
-
-        .chat {
-            height: 300px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ffffff;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #333333; /* Dark gray input field */
-            color: #ffffff;
-        }
-
-        button#send-button {
-            background-color: #007acc; /* Blue send button */
-            border: none;
-            color: #ffffff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+        .response-container {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <header>
-        <button id="impress-button">Impress</button>
+        <button id="impress-button" class="impress-button">Impress</button>
     </header>
-    <main>
-        <div class="chat-container">
-            <div class="chat" id="chat"></div>
-            <input type="text" id="user-input" placeholder="Type your message...">
-            <button id="send-button">Send</button>
+    <div class="content">
+        <h1>Ask me a question</h1>
+        <input type="text" id="user-input" placeholder="Type your question...">
+        <button id="send-button" class="send-button">→</button>
+        <div class="suggested-questions">
+            What degree do you have? | Do you have experience abroad?
         </div>
-    </main>
-    
+        <div class="loading-animation" id="loading-animation">Loading...</div>
+        <div class="response-container" id="response-container"></div>
+    </div>
+
     <script>
-    const apiGatewayUrl = 'https://us-central1-website-412518.cloudfunctions.net/function-1';
+        document.addEventListener("DOMContentLoaded", function () {
+            const userInput = document.getElementById("user-input");
+            const sendButton = document.getElementById("send-button");
+            const loadingAnimation = document.getElementById("loading-animation");
+            const responseContainer = document.getElementById("response-container");
+            const content = document.querySelector(".content");
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const chatContainer = document.querySelector(".chat");
-        const userInput = document.getElementById("user-input");
-        const sendButton = document.getElementById("send-button");
-
-        sendButton.addEventListener("click", sendMessage);
-        userInput.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                sendMessage();
-            }
-        });
-
-       async function sendMessage() {
-    const userMessage = userInput.value.trim();
-    if (userMessage !== "") {
-        appendMessage("You: " + userMessage);
-        userInput.value = "";
-
-        try {
-            const response = await fetch(apiGatewayUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ message: userMessage })
+            sendButton.addEventListener("click", function() {
+                processQuery();
             });
 
-            const responseData = await response.json();
-            console.log(responseData);
+            userInput.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") {
+                    processQuery();
+                }
+            });
 
-            if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
-                const aiResponse = responseData.choices[0].message.content; // Access 'content' field
-                appendMessage("AI: " + aiResponse);
-            } else {
-                console.error("No valid AI response received.");
+            async function processQuery() {
+                const userMessage = userInput.value.trim();
+                if (userMessage !== "") {
+                    userInput.style.display = "none";
+                    sendButton.style.display = "none";
+                    loadingAnimation.style.display = "block";
+                    content.style.top = "10px";
+                    content.style.transform = "translateY(0)";
+
+                    try {
+                        const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-1', { message: userMessage });
+                        const responseData = response.data;
+                        if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
+                            const aiResponse = responseData.choices[0].message.content;
+                            responseContainer.innerHTML = "AI: " + aiResponse;
+                        } else {
+                            responseContainer.innerHTML = "No valid AI response received.";
+                        }
+                    } catch (error) {
+                        responseContainer.innerHTML = "Error: " + error.message;
+                    } finally {
+                        loadingAnimation.style.display = "none";
+                        userInput.style.display = "inline";
+                        sendButton.style.display = "inline";
+                    }
+                }
             }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-}
-
-        function appendMessage(message) {
-            const messageElement = document.createElement("div");
-            messageElement.textContent = message;
-            chatContainer.appendChild(messageElement);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-    });
-</script>
-
+        });
+    </script>
 </body>
 </html>
