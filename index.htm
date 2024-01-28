@@ -3,26 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal AI Assistant</title>
+    <title>Professional AI Assistant</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <style>
         body, html {
             height: 100%;
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #2C1938; /* Uni-color background */
-            color: #ffffff; /* White text */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212; /* Dark background */
+            color: #E0E0E0; /* Light text for contrast */
         }
 
-        .content {
-            position: relative;
+        .content, .impress-content {
+            position: absolute;
             top: 50%;
-            transform: translateY(-50%);
+            left: 50%;
+            transform: translate(-50%, -50%);
             text-align: center;
+            display: none;
+        }
+
+        .content.active, .impress-content.active {
+            display: block;
         }
 
         h1 {
-            font-size: 2em;
             margin-bottom: 20px;
         }
 
@@ -30,14 +35,14 @@
             width: 50%;
             padding: 10px;
             border-radius: 5px;
-            border: 2px solid #5D3F6A; /* Subtle border */
-            background-color: #341A4B; /* Darker background for input */
-            color: #ffffff;
+            border: 2px solid #333333; /* Subtle border */
+            background-color: #1C1C1C; /* Dark input background */
+            color: #E0E0E0;
             font-size: 1.2em;
         }
 
         .send-button {
-            background-color: #4C3C70; /* Subtle button color */
+            background-color: #333333; /* Dark button color */
             border: none;
             padding: 12px 20px;
             border-radius: 5px;
@@ -47,12 +52,21 @@
 
         .suggested-questions {
             margin-top: 20px;
-            color: #7C629B; /* Subtle color for suggested questions */
+            color: #4F4F4F; /* Subtle color for questions */
         }
 
         .loading-animation {
             display: none;
             margin-top: 20px;
+        }
+
+        .response-container {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
         }
 
         header {
@@ -61,24 +75,28 @@
             right: 10px;
         }
 
-        .impress-button {
+        .impress-button, .back-button {
             background-color: transparent;
             border: none;
-            color: #ffffff;
+            color: #E0E0E0;
             cursor: pointer;
             font-size: 1em;
         }
 
-        .response-container {
-            margin-top: 20px;
+        .back-button {
+            display: none;
+            position: absolute;
+            top: 10px;
+            left: 10px;
         }
     </style>
 </head>
 <body>
     <header>
         <button id="impress-button" class="impress-button">Impress</button>
+        <button id="back-button" class="back-button">← Back</button>
     </header>
-    <div class="content">
+    <div class="content active">
         <h1>Ask me a question</h1>
         <input type="text" id="user-input" placeholder="Type your question...">
         <button id="send-button" class="send-button">→</button>
@@ -86,8 +104,14 @@
             What degree do you have? | Do you have experience abroad?
         </div>
         <div class="loading-animation" id="loading-animation">Loading...</div>
-        <div class="response-container" id="response-container"></div>
     </div>
+    <div class="impress-content">
+        <!-- Impressum content goes here -->
+        <h2>Impressum</h2>
+        <p>Content for Impressum...</p>
+        <!-- Add more content as needed -->
+    </div>
+    <div class="response-container" id="response-container"></div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -95,42 +119,53 @@
             const sendButton = document.getElementById("send-button");
             const loadingAnimation = document.getElementById("loading-animation");
             const responseContainer = document.getElementById("response-container");
+            const impressButton = document.getElementById("impress-button");
+            const backButton = document.getElementById("back-button");
             const content = document.querySelector(".content");
+            const impressContent = document.querySelector(".impress-content");
 
-            sendButton.addEventListener("click", function() {
-                processQuery();
-            });
-
+            sendButton.addEventListener("click", processQuery);
             userInput.addEventListener("keydown", function (event) {
                 if (event.key === "Enter") {
                     processQuery();
                 }
             });
 
+            impressButton.addEventListener("click", function () {
+                content.classList.remove("active");
+                impressContent.classList.add("active");
+                impressButton.style.display = "none";
+                backButton.style.display = "block";
+            });
+
+            backButton.addEventListener("click", function () {
+                impressContent.classList.remove("active");
+                content.classList.add("active");
+                impressButton.style.display = "block";
+                backButton.style.display = "none";
+            });
+
             async function processQuery() {
                 const userMessage = userInput.value.trim();
                 if (userMessage !== "") {
-                    userInput.style.display = "none";
-                    sendButton.style.display = "none";
+                    responseContainer.style.display = "none";
                     loadingAnimation.style.display = "block";
-                    content.style.top = "10px";
-                    content.style.transform = "translateY(0)";
-
                     try {
                         const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-1', { message: userMessage });
                         const responseData = response.data;
                         if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
                             const aiResponse = responseData.choices[0].message.content;
-                            responseContainer.innerHTML = "AI: " + aiResponse;
+                            responseContainer.innerHTML = "<p>" + aiResponse + "</p>";
+                            responseContainer.style.display = "block";
                         } else {
-                            responseContainer.innerHTML = "No valid AI response received.";
+                            responseContainer.innerHTML = "<p>No valid AI response received.</p>";
+                            responseContainer.style.display = "block";
                         }
                     } catch (error) {
-                        responseContainer.innerHTML = "Error: " + error.message;
+                        responseContainer.innerHTML = "<p>Error: " + error.message + "</p>";
+                        responseContainer.style.display = "block";
                     } finally {
                         loadingAnimation.style.display = "none";
-                        userInput.style.display = "inline";
-                        sendButton.style.display = "inline";
                     }
                 }
             }
