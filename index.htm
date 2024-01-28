@@ -1,124 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Declare the document type and specify the language (English) -->
     <meta charset="UTF-8">
+    <!-- Set the viewport for responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional AI Assistant</title>
+    <!-- Define the page title displayed in the browser's tab -->
+    <title>reisig.org</title>
+    
+    <!-- Include the Axios JavaScript library for making HTTP requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <!-- Define CSS styles for the entire page -->
     <style>
         body, html {
+            /* Apply styles to the body and HTML elements */
             height: 100%;
             margin: 0;
-            overflow: hidden; /* Prevent scrolling */
+            overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #120718; /* Updated background color */
-            color: #E0E0E0;
+            background-color: #461a01;
+            color: #ffffff;
         }
-
+        
         .content, .impress-content {
+            /* Apply styles to the content and impressum sections */
             position: absolute;
             top: 50%;
             left: 50%;
+            width: 80%;
             transform: translate(-50%, -50%);
             text-align: center;
-            display: none;
+            display: none; /* Initially hide these sections */
         }
-
+        
         .content.active, .impress-content.active {
+            /* Display the content or impressum section when it's active */
             display: block;
         }
-
+        
         h1 {
+            /* Apply styles to heading elements */
             margin-bottom: 20px;
         }
-
+        
         input[type="text"] {
-            width: 60%; /* Wider input field */
+            /* Apply styles to input text field */
+            width: 60%;
             padding: 12px;
-            border-radius: 5px;
-            border: 2px solid #333333;
-            background-color: #1C1C1C;
-            color: #E0E0E0;
+            border-radius: 20px;
+            border: 0px solid #000000;
+            background-color: #ffffff;
+            color: #000000;
             font-size: 1.2em;
         }
-
+        
         .send-button {
-            background-color: #333333;
+            /* Apply styles to the send button */
+            background-color: transparent;
+            color: #ffffff;
             border: none;
-            padding: 12px 24px; /* Larger padding for fatter arrow */
-            border-radius: 5px;
+            padding: 0px 0px;
+            border-radius: 0px;
             cursor: pointer;
             margin-left: 10px;
-            font-size: 1.5em; /* Fatter arrow */
+            font-size: 1.4em; /* Enlarge button text */
+            font-weight: 900;
         }
-
+        
         .suggested-questions {
+            /* Apply styles to the suggested questions section */
             margin-top: 20px;
-            color: #4F4F4F;
+            color: #c6c6c6;
         }
-
+        
         .loading-animation {
-            display: none;
+            /* Apply styles to the loading animation section */
+            display: none; /* Initially hide the loading animation */
             margin-top: 20px;
         }
-
+        
         .response-container {
-            display: none;
-            position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, 0%);
-            width: 80%;
+            /* Apply styles to the response container */
+            display: none; /* Initially hide the response container */
             text-align: left;
-            font-size: 1.1em;
+            font-size: 1em;
+            font-weight: bold;
+            font-style: italic;
+            margin-top: 60px;
+            background-color: #ffffff;
+            color: #000000;
+            border-top-left-radius: 50px;
+            border-top-right-radius: 50px;
+            border-bottom-left-radius: 50px;
+            padding-left: 50px;
+            padding-right: 50px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            border: solid;
+            border-color: #151554;
+            border-width: 4px;
+        }
+        
+        header {
+            /* Apply styles to the header section */
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
         }
 
-        header {
+        footer {
+            /* Apply styles to the header section */
             position: absolute;
-            top: 10px;
-            right: 10px;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            margin: 10px;
+        }
+        
+        .small-text {
+            /* Apply styles to the suggested questions section */
+            color: #909090;
+            font-size: 0.8em;
         }
 
         .impress-button, .back-button {
+            /* Apply styles to the impress and back buttons */
             background-color: transparent;
             border: none;
-            color: #E0E0E0;
+            color: #ffffff;
             cursor: pointer;
-            font-size: 1em;
+            padding: 20px;
         }
 
+        .impress-button {
+            display: block;
+            position: absolute;
+            font-size: 1em;
+            right: 0px;
+        }
+        
         .back-button {
+            /* Apply styles to the back button and initially hide it */
             display: none;
             position: absolute;
-            top: 10px;
-            left: 10px;
+            font-size: 1.5em;
+
         }
     </style>
 </head>
 <body>
     <header>
+        <!-- Create buttons for switching between content and impressum sections -->
+        <button id="back-button" class="back-button">&lt</button>
         <button id="impress-button" class="impress-button">Impress</button>
-        <button id="back-button" class="back-button">← Back</button>
+
     </header>
+    
     <div class="content active">
-        <h1>Ask me a question</h1>
+        <!-- Define the main content section for user interaction -->
+        <h1>Ask me a question ...</h1>
+        <!-- Create an input field for user queries -->
         <input type="text" id="user-input" placeholder="Type your question...">
-        <button id="send-button" class="send-button">→</button>
+        <!-- Create a button to submit user queries -->
+        <button id="send-button" class="send-button">➤</button>
+        <!-- Provide suggested questions for user reference -->
         <div class="suggested-questions">
             What degree do you have? | Do you have experience abroad?
         </div>
+        <!-- Display loading animation while waiting for a response -->
         <div class="loading-animation" id="loading-animation">Loading...</div>
+        <div class="response-container" id="response-container"></div>
     </div>
+    
     <div class="impress-content">
-        <!-- Impressum content goes here -->
+        <!-- Define the Impressum (legal notice) content section -->
         <h2>Impressum</h2>
+        <!-- Add content for the Impressum section -->
         <p>Content for Impressum...</p>
-        <!-- Add more content as needed -->
+        <!-- Additional Impressum content can be added here -->
     </div>
-    <div class="response-container" id="response-container"></div>
 
+    <footer>
+
+        <p class="small-text">Robert Reisig - The information is generated by artificial intelligence and may not be guaranteed for accuracy. For further inquiries or clarifications, please do not hesitate to contact me.</p>
+
+    </footer>
+    
+    
+
+    <!-- JavaScript code for handling user input and making requests -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+            // Get references to HTML elements using JavaScript
             const userInput = document.getElementById("user-input");
             const sendButton = document.getElementById("send-button");
             const loadingAnimation = document.getElementById("loading-animation");
@@ -126,9 +201,11 @@
             const impressButton = document.getElementById("impress-button");
             const backButton = document.getElementById("back-button");
             const content = document.querySelector(".content");
+            const suggestedQuestions = document.querySelector(".suggested-questions");
             const impressContent = document.querySelector(".impress-content");
             const title = document.querySelector("h1");
 
+            // Define event listeners for user interactions
             sendButton.addEventListener("click", processQuery);
             userInput.addEventListener("keydown", function (event) {
                 if (event.key === "Enter") {
@@ -137,6 +214,7 @@
             });
 
             impressButton.addEventListener("click", function () {
+                // Switch to the Impressum content section
                 content.classList.remove("active");
                 impressContent.classList.add("active");
                 impressButton.style.display = "none";
@@ -144,36 +222,43 @@
             });
 
             backButton.addEventListener("click", function () {
+                // Switch back to the main content section
                 impressContent.classList.remove("active");
                 content.classList.add("active");
                 impressButton.style.display = "block";
                 backButton.style.display = "none";
             });
 
+            // Define a function to process user queries
             async function processQuery() {
+                // Retrieve and trim the user's input
                 const userMessage = userInput.value.trim();
                 if (userMessage !== "") {
+                    // Hide the response container and display loading animation
                     responseContainer.style.display = "none";
                     loadingAnimation.style.display = "block";
-                    content.style.top = "0";
-                    content.style.transform = "translate(-50%, 0)";
-                    title.style.fontSize = "1.5em"; // Smaller title when response is displayed
+                    suggestedQuestions.style.display = "none";
 
                     try {
+                        // Make an HTTP POST request to a server-side AI function
                         const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-1', { message: userMessage });
                         const responseData = response.data;
                         if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
+                            // Display AI response in the response container
                             const aiResponse = responseData.choices[0].message.content;
                             responseContainer.innerHTML = "<p>" + aiResponse + "</p>";
                             responseContainer.style.display = "block";
                         } else {
+                            // Display an error message for an invalid AI response
                             responseContainer.innerHTML = "<p>No valid AI response received.</p>";
                             responseContainer.style.display = "block";
                         }
                     } catch (error) {
+                        // Display an error message if there's an issue with the request
                         responseContainer.innerHTML = "<p>Error: " + error.message + "</p>";
                         responseContainer.style.display = "block";
                     } finally {
+                        // Hide the loading animation when the processing is complete
                         loadingAnimation.style.display = "none";
                     }
                 }
