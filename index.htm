@@ -207,6 +207,10 @@
     25%, 50% { opacity: 1; }
 }
 
+.inline-paragraph {
+  display: inline; /* or display: inline-block; */
+  margin: 0; /* Optional to remove default margin */
+}
 
 
 
@@ -229,7 +233,15 @@
         <button id="send-button" class="send-button">➤</button>
         <!-- Provide suggested questions for user reference -->
         <div class="suggested-questions">
-            What degree do you have? | Do you have experience abroad?
+            <p class="inline-paragraph">What degree do you have?</p>
+            <p class="inline-paragraph"> | </p>
+            <p class="inline-paragraph">Do you have experience abroad?</p>
+            <p class="inline-paragraph"> | </p>
+            <p class="inline-paragraph">What's the most unusual hobby or skill you possess?</p>
+            <p class="inline-paragraph"> | </p>
+            <p class="inline-paragraph">Can you walk me through your key accomplishments?</p>
+            <p class="inline-paragraph"> | </p>
+            <p class="inline-paragraph">What's a significant milestone you are proud of?</p>
         </div>
         <!-- Display loading animation while waiting for a response -->
         <div class="loading-animation" id="loading-animation">
