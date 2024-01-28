@@ -13,8 +13,16 @@
     
     <!-- Define CSS styles for the entire page -->
     <style>
+
+
+
+::-webkit-scrollbar {
+      display: none; 
+    }
+
         body, html {
             /* Apply styles to the body and HTML elements */
+            scrollbar-width: none;
             height: 100%;
             margin: 0;
             overflow: hidden;
@@ -84,25 +92,11 @@
         .response-container {
             /* Apply styles to the response container */
             display: none;
-            max-height: 50%;
-            overflow: auto;
             text-align: left;
             font-size: 1em;
             font-weight: bold;
-            font-style: italic;
-            margin-top: 60px;
-            background-color: #ffffff;
             color: #000000;
-            border-top-left-radius: 50px;
-            border-top-right-radius: 50px;
-            border-bottom-left-radius: 50px;
-            padding-left: 50px;
-            padding-right: 50px;
-            padding-top: 15px;
-            padding-bottom: 15px;
-            border: solid;
-            border-color: #151554;
-            border-width: 4px;
+            margin: 50px;
         }
         
         header {
@@ -157,6 +151,35 @@
             transition: transform 0.3s ease;
         }
 
+        .popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(2px);
+    z-index: 1;
+}
+
+/* Style for the popup content */
+.popup-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #ffffff;
+    width: 80%;
+    height: 80%;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
+    border: solid;
+    border-color: #000000;
+    border-width: 5px;
+    overflow: auto;
+}
+
     </style>
 </head>
 <body>
@@ -180,7 +203,6 @@
         </div>
         <!-- Display loading animation while waiting for a response -->
         <div class="loading-animation" id="loading-animation">Loading...</div>
-        <div class="response-container" id="response-container"></div>
     </div>
     
     <div class="impress-content">
@@ -189,6 +211,12 @@
         <!-- Add content for the Impressum section -->
         <p>Content for Impressum...</p>
         <!-- Additional Impressum content can be added here -->
+    </div>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+                 <div class="response-container" id="response-container"></div>
+       </div>
     </div>
 
     <footer>
@@ -213,6 +241,14 @@
             const suggestedQuestions = document.querySelector(".suggested-questions");
             const impressContent = document.querySelector(".impress-content");
             const title = document.querySelector("h1");
+            const popup = document.getElementById("popup");
+            const overlay = document.querySelector(".popup");
+
+            overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+        popup.style.display = "none";
+    }
+});
 
             // Define event listeners for user interactions
             sendButton.addEventListener("click", processQuery);
@@ -254,17 +290,20 @@
                         const responseData = response.data;
                         if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
                             // Display AI response in the response container
+                            popup.style.display = "block";
                             const aiResponse = responseData.choices[0].message.content;
                             responseContainer.innerHTML = "<p>" + aiResponse + "</p>";
                             responseContainer.style.display = "block";
                         } else {
                             // Display an error message for an invalid AI response
+                            popup.style.display = "block";
                             responseContainer.innerHTML = "<p>No valid AI response received.</p>";
                             responseContainer.style.display = "block";
                         }
                     } catch (error) {
                         // Display an error message if there's an issue with the request
-                        responseContainer.innerHTML = "<p>Error: " + error.message + "</p>";
+                        popup.style.display = "block";
+                        responseContainer.innerHTML = "<p>Error: " + error.message + "<br><br><br><br><br><br>aaaa sadfadsfdsaf asdfdsafagsdgf asdgasdgfasdgf asdgsdfdsfadsfa asdgdsafadsfsdga adsgesgdsdgsdfsad asgdaewgewgfwegdsagde aegfdsgrewgfdseawevafeawfewfsdafdsfasd agsdfewgfwfesd agdsgasgdasdf asdgdsgf<br><br><br><br><br><br><br><br><br><br><br>asdfasdf<br><br><br><br><br><br>sadfdsfy<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>adsfadsf</p>";
                         responseContainer.style.display = "block";
                     } finally {
                         // Hide the loading animation when the processing is complete
