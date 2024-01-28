@@ -9,9 +9,10 @@
         body, html {
             height: 100%;
             margin: 0;
+            overflow: hidden; /* Prevent scrolling */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212; /* Dark background */
-            color: #E0E0E0; /* Light text for contrast */
+            background-color: #120718; /* Updated background color */
+            color: #E0E0E0;
         }
 
         .content, .impress-content {
@@ -32,27 +33,28 @@
         }
 
         input[type="text"] {
-            width: 50%;
-            padding: 10px;
+            width: 60%; /* Wider input field */
+            padding: 12px;
             border-radius: 5px;
-            border: 2px solid #333333; /* Subtle border */
-            background-color: #1C1C1C; /* Dark input background */
+            border: 2px solid #333333;
+            background-color: #1C1C1C;
             color: #E0E0E0;
             font-size: 1.2em;
         }
 
         .send-button {
-            background-color: #333333; /* Dark button color */
+            background-color: #333333;
             border: none;
-            padding: 12px 20px;
+            padding: 12px 24px; /* Larger padding for fatter arrow */
             border-radius: 5px;
             cursor: pointer;
             margin-left: 10px;
+            font-size: 1.5em; /* Fatter arrow */
         }
 
         .suggested-questions {
             margin-top: 20px;
-            color: #4F4F4F; /* Subtle color for questions */
+            color: #4F4F4F;
         }
 
         .loading-animation {
@@ -63,10 +65,12 @@
         .response-container {
             display: none;
             position: absolute;
-            top: 50%;
+            top: 20%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, 0%);
             width: 80%;
+            text-align: left;
+            font-size: 1.1em;
         }
 
         header {
@@ -123,6 +127,7 @@
             const backButton = document.getElementById("back-button");
             const content = document.querySelector(".content");
             const impressContent = document.querySelector(".impress-content");
+            const title = document.querySelector("h1");
 
             sendButton.addEventListener("click", processQuery);
             userInput.addEventListener("keydown", function (event) {
@@ -150,6 +155,10 @@
                 if (userMessage !== "") {
                     responseContainer.style.display = "none";
                     loadingAnimation.style.display = "block";
+                    content.style.top = "0";
+                    content.style.transform = "translate(-50%, 0)";
+                    title.style.fontSize = "1.5em"; // Smaller title when response is displayed
+
                     try {
                         const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-1', { message: userMessage });
                         const responseData = response.data;
