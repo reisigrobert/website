@@ -182,6 +182,31 @@
     overflow: auto;
 }
 
+.loading span {
+    opacity: 0;
+    animation: fadeInOutDot 1s infinite;
+}
+
+.loading span:nth-child(1) {
+    animation-delay: 0.125s;
+}
+
+.loading span:nth-child(2) {
+    animation-delay: 0.25s;
+}
+
+.loading span:nth-child(3) {
+    animation-delay: 0.375s;
+}
+
+@keyframes fadeInOutDot {
+    0%, 75% { opacity: 0; }
+    25%, 50% { opacity: 1; }
+}
+
+
+
+
     </style>
 </head>
 <body>
@@ -204,7 +229,13 @@
             What degree do you have? | Do you have experience abroad?
         </div>
         <!-- Display loading animation while waiting for a response -->
-        <div class="loading-animation" id="loading-animation">Loading...</div>
+        <div class="loading-animation" id="loading-animation">
+            <div class="loading">
+                Loading
+                <span>.</span><span>.</span><span>.</span>
+            </div>
+            
+        </div>
     </div>
     
     <div class="impress-content">
@@ -304,12 +335,12 @@
                         }
                     } catch (error) {
                         // Display an error message if there's an issue with the request
-                        popup.style.display = "block";
+                      popup.style.display = "block";
                         responseContainer.innerHTML = "<p>Error: " + error.message + "<br><br><br><br><br><br>aaaa sadfadsfdsaf asdfdsafagsdgf asdgasdgfasdgf asdgsdfdsfadsfa asdgdsafadsfsdga adsgesgdsdgsdfsad asgdaewgewgfwegdsagde aegfdsgrewgfdseawevafeawfewfsdafdsfasd agsdfewgfwfesd agdsgasgdasdf asdgdsgf<br><br><br><br><br><br><br><br><br><br><br>asdfasdf<br><br><br><br><br><br>sadfdsfy<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>adsfadsf</p>";
-                        responseContainer.style.display = "block";
+                       responseContainer.style.display = "block";
                     } finally {
                         // Hide the loading animation when the processing is complete
-                        loadingAnimation.style.display = "none";
+                       loadingAnimation.style.display = "none";
                     }
                 }
             }
