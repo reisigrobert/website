@@ -245,6 +245,19 @@ s0.parentNode.insertBefore(s1,s0);
   margin: 0; /* Optional to remove default margin */
 }
 
+        /* Style the link */
+.privacy-link {
+    color: #ffffff; /* Set the text color to white (you can adjust the color as needed) */
+    text-decoration: none; /* Remove the default underline */
+    transition: color 0.3s ease, text-decoration 0.3s ease; /* Add a transition for smooth color and text-decoration changes */
+}
+
+/* Style the link on hover */
+.privacy-link:hover {
+    text-decoration: underline; /* Underline the link on hover */
+    color: #ffffff; /* Change the color on hover (you can adjust the color as needed) */
+}
+
 
 
     </style>
@@ -299,11 +312,12 @@ s0.parentNode.insertBefore(s1,s0);
             Robert Reisig<br>
             c/o Block Services<br>
             Stuttgarter Str. 106<br>
-            70736 Fellbach<br><br>
-            Germany</p>
+            70736 Fellbach<br>
+            Germany<br></p>
         <!-- Additional Impressum content can be added here -->
          <p><b>Privacy Policy</b><br>
-        <a href="reisig-privacy-policy.pdf" target="_blank">Download</a></p>
+        <a class="privacy-link" href="reisig-privacy-policy.pdf" target="_blank">Download Privacy Policy</a>
+
 
     </div>
 
