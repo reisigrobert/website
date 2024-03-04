@@ -4,17 +4,13 @@
     <meta name="title" content="Robert Reisig">
     <meta name="image" content="/logo.jpg"> 
     <link rel="icon" type="image/svg" href="/logo.svg">
-    <!-- Declare the document type and specify the language (English) -->
     <meta charset="UTF-8">
-    <!-- Set the viewport for responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Define the page title displayed in the browser's tab -->
     <title>reisig.org</title>
     
-    <!-- Include the Axios JavaScript library for making HTTP requests -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
-    <!--Start of Tawk.to Script-->
+
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
 (function(){
@@ -26,7 +22,33 @@ s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
-<!--End of Tawk.to Script-->
+
+    <script>
+ function gfdx() {
+    const apiUrl = 'https://us-central1-website-412518.cloudfunctions.net/function-5';
+
+    fetch(apiUrl, {
+        method: 'POST', // or 'PUT'
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+        }),
+        mode: 'cors', 
+        credentials: 'include',
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+window.addEventListener('load', gfdx);
+
+    </script>
+
     
     
     <!-- Define CSS styles for the entire page -->
@@ -39,7 +61,6 @@ s0.parentNode.insertBefore(s1,s0);
     }
 
         body, html {
-            /* Apply styles to the body and HTML elements */
             scrollbar-width: none;
             height: 100%;
             width: 100%;
@@ -53,7 +74,6 @@ s0.parentNode.insertBefore(s1,s0);
         }
         
         .content {
-            /* Apply styles to the content and impressum sections */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -64,7 +84,6 @@ s0.parentNode.insertBefore(s1,s0);
         }
 
         .impress-content {
-            /* Apply styles to the content and impressum sections */
             position: absolute;
             top: 50%;
             left: 50%;
@@ -76,20 +95,17 @@ s0.parentNode.insertBefore(s1,s0);
         }
         
         .content.active, .impress-content.active {
-            /* Display the content or impressum section when it's active */
             display: block;
             transition: opacity 0.5s ease-in-out;
             overflow: auto;
         }
         
         h1 {
-            /* Apply styles to heading elements */
             margin-bottom: 20px;
             font-size: 1.4em;
         }
         
         input[type="text"] {
-            /* Apply styles to input text field */
             width: 80%;
             max-width: 600px;
             padding: 12px;
@@ -101,7 +117,6 @@ s0.parentNode.insertBefore(s1,s0);
         }
         
         .send-button {
-            /* Apply styles to the send button */
             background-color: transparent;
             color: #ffffff;
             border: none;
@@ -114,20 +129,17 @@ s0.parentNode.insertBefore(s1,s0);
         }
         
         .suggested-questions {
-            /* Apply styles to the suggested questions section */
             margin-top: 20px;
             color: #c6c6c6;
             font-size: 1em;
         }
         
         .loading-animation {
-            /* Apply styles to the loading animation section */
-            display: none; /* Initially hide the loading animation */
+            display: none;
             margin-top: 20px;
         }
         
         .response-container {
-            /* Apply styles to the response container */
             display: none;
             text-align: left;
             font-size: 1em;
@@ -137,7 +149,6 @@ s0.parentNode.insertBefore(s1,s0);
         }
         
         header {
-            /* Apply styles to the header section */
             position: absolute;
             top: 0px;
             left: 0px;
@@ -145,7 +156,6 @@ s0.parentNode.insertBefore(s1,s0);
         }
 
         footer {
-            /* Apply styles to the header section */
             position: absolute;
             bottom: 0px;
             left: 0px;
@@ -154,7 +164,6 @@ s0.parentNode.insertBefore(s1,s0);
         }
         
         .small-text {
-            /* Apply styles to the suggested questions section */
             color: #909090;
             font-size: 0.8em;
             text-align: center;
@@ -163,7 +172,6 @@ s0.parentNode.insertBefore(s1,s0);
         }
 
         .impress-button, .back-button {
-            /* Apply styles to the impress and back buttons */
             background-color: transparent;
             border: none;
             color: #ffffff;
@@ -180,7 +188,6 @@ s0.parentNode.insertBefore(s1,s0);
         }
         
         .back-button {
-            /* Apply styles to the back button and initially hide it */
             display: none;
             position: absolute;
             font-size: 1.5em;
@@ -205,7 +212,6 @@ s0.parentNode.insertBefore(s1,s0);
     z-index: 1;
 }
 
-/* Style for the popup content */
 .popup-content {
     position: absolute;
     top: 50%;
@@ -246,20 +252,19 @@ s0.parentNode.insertBefore(s1,s0);
 }
 
 .inline-paragraph {
-  display: inline; /* or display: inline-block; */
-  margin: 0; /* Optional to remove default margin */
+  display: inline; 
+  margin: 0; 
 }
 
-        /* Style the link */
 .privacy-link {
-    color: #ffffff; /* Set the text color to white (you can adjust the color as needed) */
-    text-decoration: none; /* Remove the default underline */
+    color: #ffffff; 
+    text-decoration: none; 
 }
 
-/* Style the link on hover */
+
 .privacy-link:hover {
-    text-decoration: underline; /* Underline the link on hover */
-    color: #ffffff; /* Change the color on hover (you can adjust the color as needed) */
+    text-decoration: underline; 
+    color: #ffffff; 
 }
 
 
@@ -268,20 +273,15 @@ s0.parentNode.insertBefore(s1,s0);
 </head>
 <body>
     <header>
-        <!-- Create buttons for switching between content and impressum sections -->
         <button id="back-button" class="back-button">&lt</button>
         <button id="impress-button" class="impress-button">Imprint &<br>Privacy Policy</button>
 
     </header>
     
     <div class="content active">
-        <!-- Define the main content section for user interaction -->
         <h1>Ask me a question ...</h1>
-        <!-- Create an input field for user queries -->
         <input type="text" id="user-input" placeholder="Type here ...">
-        <!-- Create a button to submit user queries -->
         <button id="send-button" class="send-button">➤</button>
-        <!-- Provide suggested questions for user reference -->
         <div class="suggested-questions">
             <p class="inline-paragraph">What degree do you have?</p>
             <p class="inline-paragraph"> | </p>
@@ -289,7 +289,6 @@ s0.parentNode.insertBefore(s1,s0);
             <p class="inline-paragraph"> | </p>
             <p class="inline-paragraph">What's the most unusual hobby or skill you possess?</p>
         </div>
-        <!-- Display loading animation while waiting for a response -->
         <div class="loading-animation" id="loading-animation">
             <div class="loading">
                 Loading
@@ -300,9 +299,7 @@ s0.parentNode.insertBefore(s1,s0);
     </div>
     
     <div class="impress-content">
-        <!-- Define the Impressum (legal notice) content section -->
         <h2>Imprint</h2>
-        <!-- Add content for the Impressum section -->
         <p><b>Information according to § 5 TMG</b><br>
             Robert Reisig<br>
             c/o Block Services<br>
@@ -318,7 +315,6 @@ s0.parentNode.insertBefore(s1,s0);
             Stuttgarter Str. 106<br>
             70736 Fellbach<br>
             Germany<br></p>
-        <!-- Additional Impressum content can be added here -->
          <p><b>Privacy Policy</b><br>
         <a class="privacy-link" href="reisig-privacy-policy.pdf" target="_blank">Open</a>
 
@@ -337,9 +333,6 @@ s0.parentNode.insertBefore(s1,s0);
 
     </footer>
     
-    
-
-    <!-- JavaScript code for handling user input and making requests -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             // Get references to HTML elements using JavaScript
@@ -362,8 +355,6 @@ s0.parentNode.insertBefore(s1,s0);
         popup.style.display = "none";
     }
 });
-
-            // Define event listeners for user interactions
             sendButton.addEventListener("click", processQuery);
             userInput.addEventListener("keydown", function (event) {
                 if (event.key === "Enter") {
@@ -372,7 +363,6 @@ s0.parentNode.insertBefore(s1,s0);
             });
 
             impressButton.addEventListener("click", function () {
-                // Switch to the Impressum content section
                 content.classList.remove("active");
                 impressContent.classList.add("active");
                 impressButton.style.display = "none";
@@ -381,7 +371,6 @@ s0.parentNode.insertBefore(s1,s0);
             });
 
             backButton.addEventListener("click", function () {
-                // Switch back to the main content section
                 impressContent.classList.remove("active");
                 content.classList.add("active");
                 impressButton.style.display = "block";
@@ -391,37 +380,30 @@ s0.parentNode.insertBefore(s1,s0);
 
             // Define a function to process user queries
             async function processQuery() {
-                // Retrieve and trim the user's input
                 const userMessage = userInput.value.trim();
                 if (userMessage !== "") {
-                    // Hide the response container and display loading animation
                     responseContainer.style.display = "none";
                     loadingAnimation.style.display = "block";
                     suggestedQuestions.style.display = "none";
 
                     try {
-                        // Make an HTTP POST request to a server-side AI function
                         const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-1', { message: userMessage });
                         const responseData = response.data;
                         if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
-                            // Display AI response in the response container
                             popup.style.display = "block";
                             const aiResponse = responseData.choices[0].message.content;
                             responseContainer.innerHTML = "<p>" + removeDoubleQuotes(aiResponse) + "</p>";
                             responseContainer.style.display = "block";
                         } else {
-                            // Display an error message for an invalid AI response
                             popup.style.display = "block";
                             responseContainer.innerHTML = "<p>No valid AI response received.</p>";
                             responseContainer.style.display = "block";
                         }
                     } catch (error) {
-                        // Display an error message if there's an issue with the request
                       popup.style.display = "block";
                         responseContainer.innerHTML = "<p>Error: " + error.message + "</p>";
                        responseContainer.style.display = "block";
                     } finally {
-                        // Hide the loading animation when the processing is complete
                        loadingAnimation.style.display = "none";
                        suggestedQuestions.style.display = "block";
                     }
