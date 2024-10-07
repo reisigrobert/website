@@ -386,7 +386,7 @@ window.addEventListener('load', gfdx);
             suggestedQuestions.style.display = "none";
 
             try {
-                const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-3', { message: userMessage });
+                const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-1', { message: userMessage });
                 const responseData = response.data;
                 if (responseData && responseData.message) {
                     popup.style.display = "block";
