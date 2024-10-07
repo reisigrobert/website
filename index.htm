@@ -334,85 +334,84 @@ window.addEventListener('load', gfdx);
     </footer>
     
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Get references to HTML elements using JavaScript
-            const userInput = document.getElementById("user-input");
-            const smallText = document.getElementById("small-text");
-            const sendButton = document.getElementById("send-button");
-            const loadingAnimation = document.getElementById("loading-animation");
-            const responseContainer = document.getElementById("response-container");
-            const impressButton = document.getElementById("impress-button");
-            const backButton = document.getElementById("back-button");
-            const content = document.querySelector(".content");
-            const suggestedQuestions = document.querySelector(".suggested-questions");
-            const impressContent = document.querySelector(".impress-content");
-            const title = document.querySelector("h1");
-            const popup = document.getElementById("popup");
-            const overlay = document.querySelector(".popup");
+        document.addEventListener("DOMContentLoaded", function() {
+    const userInput = document.getElementById("user-input");
+    const smallText = document.getElementById("small-text");
+    const sendButton = document.getElementById("send-button");
+    const loadingAnimation = document.getElementById("loading-animation");
+    const responseContainer = document.getElementById("response-container");
+    const impressButton = document.getElementById("impress-button");
+    const backButton = document.getElementById("back-button");
+    const content = document.querySelector(".content");
+    const suggestedQuestions = document.querySelector(".suggested-questions");
+    const impressContent = document.querySelector(".impress-content");
+    const title = document.querySelector("h1");
+    const popup = document.getElementById("popup");
+    const overlay = document.querySelector(".popup");
 
-            overlay.addEventListener("click", (e) => {
-    if (e.target === overlay) {
-        popup.style.display = "none";
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {
+            popup.style.display = "none";
+        }
+    });
+
+    sendButton.addEventListener("click", processQuery);
+    userInput.addEventListener("keydown", function(event) {
+        if (event.key === "Enter") {
+            processQuery();
+        }
+    });
+
+    impressButton.addEventListener("click", function() {
+        content.classList.remove("active");
+        impressContent.classList.add("active");
+        impressButton.style.display = "none";
+        smallText.style.display = "none";
+        backButton.style.display = "block";
+    });
+
+    backButton.addEventListener("click", function() {
+        impressContent.classList.remove("active");
+        content.classList.add("active");
+        impressButton.style.display = "block";
+        backButton.style.display = "none";
+        smallText.style.display = "block";
+    });
+
+    async function processQuery() {
+        const userMessage = userInput.value.trim();
+        if (userMessage !== "") {
+            responseContainer.style.display = "none";
+            loadingAnimation.style.display = "block";
+            suggestedQuestions.style.display = "none";
+
+            try {
+                const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-3', { message: userMessage });
+                const responseData = response.data;
+                if (responseData && responseData.message) {
+                    popup.style.display = "block";
+                    const aiResponse = responseData.message;
+                    responseContainer.innerHTML = "<p>" + removeDoubleQuotes(aiResponse) + "</p>";
+                    responseContainer.style.display = "block";
+                } else {
+                    popup.style.display = "block";
+                    responseContainer.innerHTML = "<p>No valid AI response received.</p>";
+                    responseContainer.style.display = "block";
+                }
+            } catch (error) {
+                popup.style.display = "block";
+                responseContainer.innerHTML = "<p>Error: " + error.message + "</p>";
+                responseContainer.style.display = "block";
+            } finally {
+                loadingAnimation.style.display = "none";
+                suggestedQuestions.style.display = "block";
+            }
+        }
     }
 });
-            sendButton.addEventListener("click", processQuery);
-            userInput.addEventListener("keydown", function (event) {
-                if (event.key === "Enter") {
-                    processQuery();
-                }
-            });
 
-            impressButton.addEventListener("click", function () {
-                content.classList.remove("active");
-                impressContent.classList.add("active");
-                impressButton.style.display = "none";
-                smallText.style.display = "none";
-                backButton.style.display = "block";
-            });
-
-            backButton.addEventListener("click", function () {
-                impressContent.classList.remove("active");
-                content.classList.add("active");
-                impressButton.style.display = "block";
-                backButton.style.display = "none";
-                smallText.style.display = "block";
-            });
-
-            // Define a function to process user queries
-            async function processQuery() {
-                const userMessage = userInput.value.trim();
-                if (userMessage !== "") {
-                    responseContainer.style.display = "none";
-                    loadingAnimation.style.display = "block";
-                    suggestedQuestions.style.display = "none";
-
-                    try {
-                        const response = await axios.post('https://us-central1-website-412518.cloudfunctions.net/function-3', { message: userMessage });
-                        const responseData = response.data;
-                        if (responseData && responseData.choices && responseData.choices[0] && responseData.choices[0].message) {
-                            popup.style.display = "block";
-                            const aiResponse = responseData.choices[0].message.content;
-                            responseContainer.innerHTML = "<p>" + removeDoubleQuotes(aiResponse) + "</p>";
-                            responseContainer.style.display = "block";
-                        } else {
-                            popup.style.display = "block";
-                            responseContainer.innerHTML = "<p>No valid AI response received.</p>";
-                            responseContainer.style.display = "block";
-                        }
-                    } catch (error) {
-                      popup.style.display = "block";
-                        responseContainer.innerHTML = "<p>Error: " + error.message + "</p>";
-                       responseContainer.style.display = "block";
-                    } finally {
-                       loadingAnimation.style.display = "none";
-                       suggestedQuestions.style.display = "block";
-                    }
-                }
-            }
-        });
-
-        function removeDoubleQuotes(inputString) {
-  return inputString.replaceAll('"', '');
+function removeDoubleQuotes(inputString) {
+    return inputString.replaceAll('"', '');
 }
 
     </script>
